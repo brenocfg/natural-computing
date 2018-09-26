@@ -141,7 +141,18 @@ struct node *build_tree(uint8_t cur_height, uint8_t num_vars) {
 
 	return root;
 }
-	
+
+void destroy_tree(struct node *node) {
+	if (node->left != NULL) {
+		destroy_tree(node->left);
+	}
+
+	if (node->right != NULL) {
+		destroy_tree(node->right);
+	}
+
+	free(node);
+}	
 
 void print_tree(struct node *node) {
 	char ops[5] = { '+', '-', '*', '/', 'l' };
@@ -177,23 +188,4 @@ void print_tree(struct node *node) {
 		print_tree(node->right);
 	}
 	fprintf(stderr, ")");
-}
-
-
-
-int main(int argc, char *argv[]) {
-	struct node *mynode1, *mynode2, *mynode3, *mynode4, *mynode5;
-	double vars[2] = { 0.21, 0.33 };
-
-	int seed = atoi(argv[1]);
-	srand(seed);
-
-	mynode1 = build_tree(0, 2);
-
-	print_tree(mynode1);
-	fprintf(stderr, "\n");
-
-	fprintf(stderr, "Eval: %f\n", eval_tree(mynode1, vars));
-
-	return 0;
 }
