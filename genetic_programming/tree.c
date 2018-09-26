@@ -41,6 +41,18 @@ struct node *init_node(uint8_t op, double value, uint8_t height, uint8_t var) {
 	return new_node;
 }
 
+void destroy_tree(struct node *node) {
+	if (node->left != NULL) {
+		destroy_tree(node->left);
+	}
+
+	if (node->right != NULL) {
+		destroy_tree(node->right);
+	}
+
+	free(node);
+}
+
 double eval_tree(struct node *node, double *vars) {
 	/*treat simple value/var type cases first*/
 	switch(node->type) {
@@ -194,6 +206,8 @@ int main(int argc, char *argv[]) {
 	fprintf(stderr, "\n");
 
 	fprintf(stderr, "Eval: %f\n", eval_tree(mynode1, vars));
+
+	destroy_tree(mynode1);
 
 	return 0;
 }
