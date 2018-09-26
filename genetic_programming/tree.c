@@ -41,6 +41,18 @@ struct node *init_node(uint8_t op, double value, uint8_t height, uint8_t var) {
 	return new_node;
 }
 
+void destroy_tree(struct node *node) {
+	if (node->left != NULL) {
+		destroy_tree(node->left);
+	}
+
+	if (node->right != NULL) {
+		destroy_tree(node->right);
+	}
+
+	free(node);
+}
+
 double eval_tree(struct node *node, double *vars) {
 	/*treat simple value/var type cases first*/
 	switch(node->type) {
@@ -189,3 +201,27 @@ void print_tree(struct node *node) {
 	}
 	fprintf(stderr, ")");
 }
+<<<<<<< HEAD
+=======
+
+
+
+int main(int argc, char *argv[]) {
+	struct node *mynode1, *mynode2, *mynode3, *mynode4, *mynode5;
+	double vars[2] = { 0.21, 0.33 };
+
+	int seed = atoi(argv[1]);
+	srand(seed);
+
+	mynode1 = build_tree(0, 2);
+
+	print_tree(mynode1);
+	fprintf(stderr, "\n");
+
+	fprintf(stderr, "Eval: %f\n", eval_tree(mynode1, vars));
+
+	destroy_tree(mynode1);
+
+	return 0;
+}
+>>>>>>> d9e8a5acb2b10fc6137f69462a1646e76eaba4ef
