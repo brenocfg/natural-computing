@@ -50,9 +50,13 @@ int main(int argc, char *argv[]) {
 	int i;
 	struct node *mynode = build_tree(0, num_vars_train-1);
 	for (i = 0; i < num_lines_train; i++) {
-		fprintf(stderr, "Eval: %lf\n", eval_tree(mynode, &train_input[i]));
+		double val = eval_tree(mynode, train_input+(i*num_vars_train));
+		fprintf(stderr, "Eval: %lf", val); 
+		fprintf(stderr, " Diff: %lf\n", (val-train_input[i*num_vars_train+(num_vars_train-1)])*(val-train_input[i*num_vars_train+(num_vars_train-1)]));
 	}
 	print_tree(mynode);
+	fprintf(stderr, "\n");
+
 	destroy_tree(mynode);
 
 	return 0;
