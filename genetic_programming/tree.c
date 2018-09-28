@@ -71,15 +71,90 @@ struct node *init_node(uint8_t op, double value, uint8_t height, uint8_t var) {
 	return new_node;
 }
 
+struct node *copy_tree(struct node *node, struct node *stop, struct node *app,
+														uint16_t cur_height) {
+	struct node *new_node;
+
+	new_node = malloc(sizeof(struct node));
+
+	/*copy over current node's attributes and set new height*/
+	new_node->height = cur_height;
+	new_node->type = node->type;
+	
+	switch (new_node->type) {
+		case OP_TYPE: {
+			new_node->data.op = node->data.op;
+			break;
+		}
+
+		case VAR_TYPE: {
+			new_node->data.var = node->data.var;
+			break;
+		}
+
+		case VAL_TYPE: {
+			new_node->data.value = node->data.value;
+			break;
+		}
+
+		default: {
+			fprintf(stderr, "Invalid node type when copying!\n");
+			break;
+		}
+	}
+
+	/*check if old node had a left child first*/
+	if (node->left != NULL) {
+		/*if reached stopping point append other tree*/
+		if (node->left == stop) {
+			new_node->left = copy_tree(app, NULL, NULL, cur_height+1);
+		}
+		/*else keep copying recursively*/
+		else {
+			new_node->left = copy_tree(node->left, stop, app, cur_height+1);
+		}
+	}
+	
+	/*same behavior for right subtree*/
+	if (node->right != NULL) {
+		if (node->right == stop) {
+			new_node->right = copy_tree(app, NULL, NULL, cur_height+1);
+		}
+		else {
+			new_node->right = copy_tree(node->right, stop, app, cur_height+1);
+		}
+	}
+
+	return new_node;
+}
+
+struct node *cross_trees(struct node *p1, struct node *p2) {
+	struct node *cross1, *cross2, *child;
+
+	cross1 = get_random_node(p1, 0);
+	fprintf(stderr, "c1: ");
+	print_tree(cross1);
+	fprintf(stderr, "\nc2: ");
+	cross2 = get_random_node(p2, 0);
+	print_tree(cross2);
+	fprintf(stderr, "\n");
+
+	child = copy_tree(p1, cross1, cross2, 0);
+	return child;	
+}
+
 void destroy_tree(struct node *node) {
+	/*destroy left subtree*/
 	if (node->left != NULL) {
 		destroy_tree(node->left);
 	}
 
+	/*destroy right subtree*/
 	if (node->right != NULL) {
 		destroy_tree(node->right);
 	}
 
+	/*destroy root*/
 	free(node);
 }
 
@@ -153,7 +228,7 @@ struct node *rand_subtree(uint8_t cur_height, uint8_t num_vars) {
 
 	prob = 100 * pow(0.85, (double)cur_height);
 
-	if ((rand() % 100) < prob) {
+	if ((rand() % 100) <= prob) {
 		return build_tree(cur_height, num_vars);
 	}
 
@@ -182,6 +257,49 @@ struct node *build_tree(uint8_t cur_height, uint8_t num_vars) {
 	}
 
 	return root;
+}
+
+struct node *get_random_node(struct node *node, uint16_t cur_height) {
+	struct node *ret = NULL;
+
+
+	uint16_t self_prob;
+	self_prob = 100 * pow(0.75, (double)cur_height);
+
+	if ((rand() % 100) >= self_prob) {
+		ret = node;
+	}
+
+	else if ((rand() % 2) && node->left != NULL) {
+		ret = get_random_node(node->left, cur_height+1);
+	}
+
+	else if (node->right != NULL) {
+		ret = get_random_node(node->right, cur_height+1);
+	}
+
+	if (ret == NULL && (cur_height == 1 || cur_height == 0)) {
+		ret = node;
+	}
+
+	return ret;
+}
+
+void mutate_tree(struct node *node, uint16_t num_vars) {
+	struct node *mut_point;
+
+	mut_point = get_random_node(node, 0);
+
+	if (mut_point->left != NULL) {
+		destroy_tree(mut_point->left);
+	}
+
+	if (mut_point->right != NULL) {
+		destroy_tree(mut_point->right);
+	}
+
+	mut_point->left = rand_subtree(mut_point->height+1, num_vars);
+	mut_point->right = rand_subtree(mut_point->height+1, num_vars);
 }
 
 void print_tree(struct node *node) {

@@ -44,23 +44,36 @@ double calc_fitness(struct node *node, double *vars, uint16_t num_vars,
 	return (fit/norm);
 }
 
-void mutate_tree(struct node *node, uint16_t num_vars) {
-	//
-}
-
 int main(int argc, char *argv[]) {
-	struct node **population;
 	double vars[] = {1.0, 1.0, 2.0, 2.0, 2.0, 4.0, 3.0, 3.0, 6.0, 4.0, 5.0, 9.0};
 	uint16_t num_vars = 3;
 	
 	int seed = atoi(argv[1]);
+	srand(seed);
 
 	if (argc < 2) {
 		fprintf(stderr, "forgot seed\n");
 		return 0;
 	}
 
-	free(population);
+	struct node *p1, *p2;
+
+	p1 = build_tree(0, 2);
+	p2 = build_tree(0, 2);
+	fprintf(stderr, "p1: ");
+	print_tree(p1);
+	fprintf(stderr, "\np2: ");
+	print_tree(p2);
+	fprintf(stderr, "\n\n");
+
+	struct node *p3 = cross_trees(p1, p2);
+	fprintf(stderr, "child: ");
+	print_tree(p3);
+	fprintf(stderr, "\n");
+
+	destroy_tree(p1);
+	destroy_tree(p2);
+	destroy_tree(p3);
 
 	return 0;
 }
