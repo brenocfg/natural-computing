@@ -74,6 +74,11 @@ int main(int argc, char *argv[]) {
 	}
 	fprintf(stderr, "\n");
 
+	fprintf(stdout, "/------- TEST DATASET --------/\n");
+	free(fits);
+	fits = eval_pop(pop, pop_size, num_vars_test, num_lines_test, test_input,
+					999);
+
 	destroy_pop(pop, pop_size);
 	free(fits);
 	free(pop);
