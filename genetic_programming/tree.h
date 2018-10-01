@@ -49,10 +49,4 @@ struct node *cross_trees(struct node *p1, struct node *p2);
 leaf*/
 uint16_t max_height(struct node *node);
 
-/*Generates a new population based on the old one, using the parameters
-provided.*/
-struct node **gen_pop(struct node **cur_pop, uint16_t pop_size, double prob,
-						uint16_t num_vars, uint16_t num_points, double *vars,
-						uint8_t elit, uint8_t tourn_size);
-
 #endif /* TREE_H */

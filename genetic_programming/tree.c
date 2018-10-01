@@ -233,7 +233,7 @@ struct node *rand_subtree(uint8_t cur_height, uint8_t num_vars) {
 	uint16_t prob;
 
 	/*probability decays proportionally to height*/
-	prob = 100 * pow(0.85, (double)cur_height);
+	prob = 100 * pow(0.70, (double)cur_height);
 
 	/*keep generating children*/
 	if ((rand() % 100) <= prob) {
@@ -241,8 +241,8 @@ struct node *rand_subtree(uint8_t cur_height, uint8_t num_vars) {
 	}
 
 	/*generate variable terminal*/
-	if (rand() % 2) {
-		uint8_t var = (rand() % num_vars) + 1;
+	if (rand() % 10 < 6) {
+		uint8_t var = (rand() % (num_vars-1)) + 1;
 		return init_node(0, 0.0, cur_height, var);
 	}
 
@@ -353,7 +353,7 @@ void print_tree(struct node *node, FILE *stream) {
 		}
 
 		case VAL_TYPE: {
-			fprintf(stream, " %f[%d] ", node->data.value, node->height);
+			fprintf(stream, " %.2f[%d] ", node->data.value, node->height);
 			break;
 		}
 

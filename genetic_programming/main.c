@@ -3,6 +3,7 @@
 #include <stdlib.h>
 
 #include "tree.h"
+#include "gen.h"
 
 double *read_input(char *filename, uint16_t *num_vars, uint16_t *num_lines) {
 	FILE *input = fopen(filename, "r");
@@ -16,7 +17,7 @@ double *read_input(char *filename, uint16_t *num_vars, uint16_t *num_lines) {
 	*(num_vars) = num_col;
 	*(num_lines) = num_line;
 
-	double *ret = malloc(num_col*num_line*sizeof(double));	
+	double *ret = malloc(num_col*num_line*sizeof(double));
 	int i, j;
 	for (i = 0; i < num_line; i++) {
 		for (j = 0; j < num_col; j++) {
@@ -30,9 +31,11 @@ double *read_input(char *filename, uint16_t *num_vars, uint16_t *num_lines) {
 }
 
 int main(int argc, char *argv[]) {
-	if (argc < 4) {
+	if (argc < 8) {
 		fprintf(stderr, "Not enough input arguments!\n");
-		fprintf(stderr, "Usage: ./gen <train_file> <test_file> <seed>\n");
+		fprintf(stderr, "Usage: ./gen <train_file> <test_file> <seed> ");
+		fprintf(stderr, "<pop_size> <num_gen> <elit_flag> <cross_prob> ");
+		fprintf(stderr, "<tourn_size>\n");
 		return 0;
 	}
 
@@ -47,17 +50,35 @@ int main(int argc, char *argv[]) {
 	int seed = atoi(argv[3]);
 	srand(seed);
 
+	uint16_t pop_size = atoi(argv[4]);
+	uint16_t num_gen = atoi(argv[5]);
+	uint8_t elit_flag = atoi(argv[6]);
+	double cross_prob = atof(argv[7]);
+	uint8_t tourn_size = atoi(argv[8]);
+
+	fprintf(stdout, "generation,best_fit,avg_fit,worst_fit\n");
+	struct node **pop = init_pop(pop_size, num_vars_train, seed);
+	double *fits;
+	fits=eval_pop(pop,pop_size,num_vars_train,num_lines_train,train_input,1);
+	print_pop(pop, fits, pop_size, stderr);
+
 	int i;
-	struct node *mynode = build_tree(0, num_vars_train-1);
-	for (i = 0; i < num_lines_train; i++) {
-		double val = eval_tree(mynode, train_input+(i*num_vars_train));
-		fprintf(stderr, "Eval: %lf", val); 
-		fprintf(stderr, " Diff: %lf\n", (val-train_input[i*num_vars_train+(num_vars_train-1)])*(val-train_input[i*num_vars_train+(num_vars_train-1)]));
+	for (i = 0; i < num_gen; i++) {
+		pop = gen_pop(pop, pop_size, cross_prob, num_vars_train,num_lines_train,
+						train_input, elit_flag, tourn_size, fits);
+		free(fits);
+		fits = eval_pop(pop, pop_size, num_vars_train, num_lines_train,
+													train_input, i+2);
+		fprintf(stderr, "\n\n/---------- Generation %d ----------/\n\n", i+2);
+		print_pop(pop, fits, pop_size, stderr);
 	}
-	print_tree(mynode);
 	fprintf(stderr, "\n");
 
-	destroy_tree(mynode);
+	destroy_pop(pop, pop_size);
+	free(fits);
+	free(pop);
+	free(train_input);
+	free(test_input);
 
 	return 0;
 }
