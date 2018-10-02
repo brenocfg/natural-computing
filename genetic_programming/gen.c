@@ -93,10 +93,18 @@ struct node *tournament(struct node **pop,uint16_t pop_size,uint16_t tourn_size,
 		indices[i] = index;
 		if (fits[index] < best_fit) {
 			best_index = index;
+			best_fit = fits[index];
 		}
 	}
 
+	fprintf(stderr, "Tournament: %d %d\n", indices[0], indices[1]);
+	fprintf(stderr, "Winner: %d\n", best_index);
+
 	struct node *ret = pop[best_index];
+
+	fprintf(stderr, "Winner: ");
+	print_tree(ret, stderr);
+	fprintf(stderr, "\n");
 
 	qsort(indices, tourn_size, sizeof(uint16_t), cmpfunc);
 	for (i = 0; i < tourn_size; i++) {
