@@ -9,6 +9,7 @@ double *read_input(char *filename, uint16_t *num_vars, uint16_t *num_lines) {
 	FILE *input = fopen(filename, "r");
 	if (input == NULL) {
 		fprintf(stderr, "Error reading input file!\n");
+		return NULL;
 	}
 
 	int num_col, num_line;
@@ -36,7 +37,7 @@ int main(int argc, char *argv[]) {
 		fprintf(stderr, "Usage: ./gen <train_file> <test_file> <seed> ");
 		fprintf(stderr, "<pop_size> <num_gen> <elit_flag> <cross_prob> ");
 		fprintf(stderr, "<tourn_size>\n");
-		return 0;
+		return 1;
 	}
 
 	fprintf(stderr, "train = %s, input = %s\n", argv[1], argv[2]);
@@ -44,8 +45,13 @@ int main(int argc, char *argv[]) {
 	uint16_t num_vars_train, num_vars_test;
 	uint16_t num_lines_train, num_lines_test;
 
-	double *train_input = read_input(argv[1], &num_vars_train, &num_lines_train);
-	double *test_input = read_input(argv[2], &num_vars_test, &num_lines_test);
+	double *train_input = read_input(argv[1],&num_vars_train,&num_lines_train);
+	double *test_input = read_input(argv[2],&num_vars_test,&num_lines_test);
+
+	if (train_input == NULL || test_input == NULL) {
+		fprintf(stderr, "Fatal error: file not found!\n");
+		return 1;
+	}	
 
 	int seed = atoi(argv[3]);
 	srand(seed);

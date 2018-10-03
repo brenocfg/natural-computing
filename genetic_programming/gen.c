@@ -97,14 +97,7 @@ struct node *tournament(struct node **pop,uint16_t pop_size,uint16_t tourn_size,
 		}
 	}
 
-	fprintf(stderr, "Tournament: %d %d\n", indices[0], indices[1]);
-	fprintf(stderr, "Winner: %d\n", best_index);
-
 	struct node *ret = pop[best_index];
-
-	fprintf(stderr, "Winner: ");
-	print_tree(ret, stderr);
-	fprintf(stderr, "\n");
 
 	qsort(indices, tourn_size, sizeof(uint16_t), cmpfunc);
 	for (i = 0; i < tourn_size; i++) {
@@ -188,7 +181,7 @@ struct node **gen_pop(struct node **cur_pop, uint16_t pop_size, double prob,
 			}
 
 			/*elitist operator takes best between parent and child*/
-			if (parfit < chifit && elit) {
+			if (parfit <= chifit && elit) {
 				new_pop[npop_size] = copy_tree(rand1, NULL, NULL, 0);
 				destroy_tree(child);
 			}

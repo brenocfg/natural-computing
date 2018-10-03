@@ -19,5 +19,17 @@ tree.o: tree.c
 main.o: main.c
 	gcc $(CFLAGS) main.c
 
+run:
+	./gen input/concrete/concrete-train.csv input/concrete/concrete-test.csv \
+	111 500 250 0 0.8 5 2>/dev/null
+	./gen input/concrete/concrete-train.csv input/concrete/concrete-test.csv \
+	222 500 250 0 0.8 5 2>/dev/null
+	./gen input/concrete/concrete-train.csv input/concrete/concrete-test.csv \
+	333 500 250 0 0.8 5 2>/dev/null
+	./gen input/concrete/concrete-train.csv input/concrete/concrete-test.csv \
+	444 500 250 0 0.8 5 2>/dev/null
+	./gen input/concrete/concrete-train.csv input/concrete/concrete-test.csv \
+	555 500 250 0 0.8 5 2>/dev/null
+
 clean:
 	rm *.o gen
