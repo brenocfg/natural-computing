@@ -6,22 +6,6 @@
 
 #include "graph.h"
 
-struct edge {
-	uint32_t id;
-	uint32_t weight;
-	uint32_t pher;
-};
-
-struct vertex {
-	uint32_t num_neigh;
-	struct edge *neighs;
-};
-
-struct graph {
-	uint32_t num_v;
-	struct vertex *vers;
-};
-
 struct graph *init_graph (uint32_t num_ver) {
 	struct graph *new_graph;
 
@@ -63,7 +47,8 @@ void print_graph (struct graph *graph) {
 	for (i = 0; i < graph->num_v; i++) {
 		fprintf(stderr, "%u[%u]: ", i, graph->vers[i].num_neigh);
 		for (j = 0; j < graph->vers[i].num_neigh; j++) {
-			fprintf(stderr, "(%u, %u)\t", graph->vers[i].neighs[j].id, graph->vers[i].neighs[j].weight);
+			fprintf(stderr, "(%u, %u)\t", graph->vers[i].neighs[j].id,
+											graph->vers[i].neighs[j].weight);
 		}
 		fprintf(stderr, "\n");
 	}

@@ -3,8 +3,10 @@
 
 #include <stdint.h>
 #include <stdio.h>
+#include <stdlib.h>
 
 #include "graph.h"
+#include "aco.h"
 
 struct graph *read_input (char *filename) {
 	struct graph *graph;
@@ -33,12 +35,20 @@ struct graph *read_input (char *filename) {
 }
 
 int main (int argc, char *argv[]) {
-	if (argc < 2) {
-		fprintf(stderr, "Usage: ./aco <input_file>\n");
+	if (argc < 5) {
+		fprintf(stderr, "Usage: ./aco <input_file> <decay_ratio> <num_ants>");
+		fprintf(stderr, " <num_it>\n");
 		return 1;
 	}
 
+	double decay = atof(argv[2]);
+	uint32_t num_ants = atoi(argv[3]);
+	uint32_t num_it = atoi(argv[4]);
+
 	struct graph *newgraph = read_input(argv[1]);
+
+	uint32_t ans = aco_longest(newgraph, decay, num_ants, num_it);
+	fprintf(stdout, "Longest path cost: %u\n", ans);
 
 	print_graph(newgraph);
 

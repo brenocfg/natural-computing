@@ -5,9 +5,27 @@
 
 #include <stdint.h>
 
-struct edge;
-struct vertex;
-struct graph;
+/*Struct that represents an edge in the graph. Edges contain the ID of the
+vertex they point to, their weight, and the amount of pheromones they contain*/
+struct edge {
+	uint32_t id;
+	uint32_t weight;
+	uint32_t pher;
+};
+
+/*Struct that represents a vertex in the graph. Vertices simply have an ID and
+an array of edges that represents their neighbourhood in the graph.*/
+struct vertex {
+	uint32_t num_neigh;
+	struct edge *neighs;
+};
+
+/*Struct that represents a graph. Graphs store the number of vertices they
+contain, and an array of vertices storing the data for each vertex.*/
+struct graph {
+	uint32_t num_v;
+	struct vertex *vers;
+};
 
 /*Initializes a graph with @num_ver vertices.*/
 struct graph *init_graph(uint32_t num_ver);
