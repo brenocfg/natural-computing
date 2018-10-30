@@ -1,3 +1,6 @@
+//----------------------------Natural Computing--------------------------------
+//----------------Student: Breno Campos Ferreira Guimaraes---------------------
+
 #include <stdio.h>
 #include <stdint.h>
 #include <stdlib.h>
