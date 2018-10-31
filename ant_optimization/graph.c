@@ -13,7 +13,7 @@ struct graph *init_graph (uint32_t num_ver) {
 	new_graph->num_v = num_ver;
 	new_graph->vers = (struct vertex*) malloc(num_ver*sizeof(struct vertex));
 
-	int i;
+	uint32_t i;
 	for (i = 0; i < num_ver; i++) {
 		new_graph->vers[i].num_neigh = 0;
 		new_graph->vers[i].neighs = NULL;
@@ -23,7 +23,7 @@ struct graph *init_graph (uint32_t num_ver) {
 }
 
 void destroy_graph (struct graph *graph) {
-	int i;
+	uint32_t i;
 	for (i = 0; i < graph->num_v; i++) {
 		free(graph->vers[i].neighs);
 	}
@@ -43,7 +43,7 @@ void add_edge (struct graph *graph, uint32_t v1, uint32_t v2, uint32_t w) {
 }	
 
 void print_graph (struct graph *graph) {
-	int i, j;
+	uint32_t i, j;
 	for (i = 0; i < graph->num_v; i++) {
 		fprintf(stderr, "%u[%u]: ", i, graph->vers[i].num_neigh);
 		for (j = 0; j < graph->vers[i].num_neigh; j++) {

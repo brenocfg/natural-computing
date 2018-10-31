@@ -35,22 +35,22 @@ struct graph *read_input (char *filename) {
 }
 
 int main (int argc, char *argv[]) {
-	if (argc < 5) {
+	if (argc < 6) {
 		fprintf(stderr, "Usage: ./aco <input_file> <decay_ratio> <num_ants>");
-		fprintf(stderr, " <num_it>\n");
+		fprintf(stderr, " <num_it> <seed>\n");
 		return 1;
 	}
 
-	double decay = atof(argv[2]);
+	double decay = 1.0 - atof(argv[2]);
 	uint32_t num_ants = atoi(argv[3]);
 	uint32_t num_it = atoi(argv[4]);
+	uint32_t seed = atoi(argv[5]);
 
+	srand(seed);
 	struct graph *newgraph = read_input(argv[1]);
 
 	uint32_t ans = aco_longest(newgraph, decay, num_ants, num_it);
 	fprintf(stdout, "Longest path cost: %u\n", ans);
-
-	print_graph(newgraph);
 
 	destroy_graph(newgraph);
 
