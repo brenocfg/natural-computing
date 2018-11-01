@@ -114,8 +114,8 @@ void reset_pher (struct graph *graph) {
 	}
 }
 
-void update_pher (struct graph *graph, struct ant *pop, uint32_t num_ants,
-												double decay, uint32_t best) {
+void update_pher (struct graph *graph, struct ant *pop, double decay,
+															uint32_t best) {
 	uint32_t i, j;
 	struct ant *a = &pop[best];
 	for (j = 0; j < a->length; j++) {
@@ -135,7 +135,7 @@ uint32_t aco_longest (struct graph *graph, double decay, uint32_t num_ants,
 															uint32_t num_it) {
 	struct ant *pop;
 	uint32_t best;
-	uint32_t best_it, avg, worst_it, best_ind;
+	uint32_t best_it, avg, worst_it, best_ind = 0;
 
 	best = 0;
 	pop = init_pop(graph, num_ants);
@@ -165,7 +165,7 @@ uint32_t aco_longest (struct graph *graph, double decay, uint32_t num_ants,
 		}
 		avg /= num_ants;
 		fprintf(stderr, "%u, %u, %u\n", best_it, avg, worst_it);
-		update_pher(graph, pop, num_ants, decay, best_ind);
+		update_pher(graph, pop, decay, best_ind);
 	}
 
 	destroy_pop(pop, num_ants);

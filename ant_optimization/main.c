@@ -19,13 +19,19 @@ struct graph *read_input (char *filename) {
 	}
 
 	uint32_t numv, nume;
-	fscanf(input, "%u %u\n", &numv, &nume);
+	if (fscanf(input, "%u %u\n", &numv, &nume) != 2) {
+		fprintf(stderr, "Badly formatted input!\n");
+		return NULL;
+	}
 
 	graph = init_graph(numv);
 
 	uint32_t i, v1, v2, weight;
 	for (i = 0; i < nume; i++) {
-		fscanf(input, "%u\t%u\t%u\n", &v1, &v2, &weight);
+		if (fscanf(input, "%u\t%u\t%u\n", &v1, &v2, &weight) != 3) {
+			fprintf(stderr, "Badly formatted input!\n");
+			return NULL;
+		}
 		add_edge(graph, v1-1, v2-1, weight);
 	}
 
@@ -47,6 +53,10 @@ int main (int argc, char *argv[]) {
 	uint32_t num_seeds = atoi(argv[5]);
 
 	struct graph *newgraph = read_input(argv[1]);
+	if (newgraph == NULL) {
+		fprintf(stderr, "Fatal error: could not build graph!\n");
+		return 1;
+	}
 
 	uint32_t i, acc = 0;
 	for (i = 0; i < num_seeds; i++) {
