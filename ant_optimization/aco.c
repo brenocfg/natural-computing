@@ -7,10 +7,17 @@
 #include <stdlib.h>
 #include <string.h>
 
+#define EPSILON 0.00001
+
 struct ant {
 	uint32_t cost;
 	uint32_t length;
 	struct edge **sol;
+};
+
+struct thread_data {
+	struct graph *graph;
+	struct ant *ant;	
 };
 
 struct ant *init_pop (struct graph *graph, uint32_t num_ants) {
@@ -53,7 +60,8 @@ void build_solution (struct graph *graph, struct ant *ant) {
 			break;
 		}
 
-		uint32_t i, prob = 0;
+		uint32_t i;
+		double prob = 0.0;
 		for (i = 0; i < graph->vers[cur].num_neigh; i++) {
 			struct edge e = graph->vers[cur].neighs[i];
 			if (visited[e.id]) {
@@ -62,13 +70,13 @@ void build_solution (struct graph *graph, struct ant *ant) {
 			prob += e.weight * e.pher;
 		}
 
-		if (prob == 0) {
+		if (prob > -EPSILON && prob < EPSILON) {
 			ant->cost = 0;
 			ant->length = 1;
 			break;
 		}
 
-		int32_t r = rand() % prob;
+		double r = ((double)rand() / RAND_MAX);
 
 		uint32_t next = cur;
 		uint32_t ncost = 0;
@@ -79,9 +87,9 @@ void build_solution (struct graph *graph, struct ant *ant) {
 				continue;
 			}
 
-			r -= (e->weight * e->pher);
+			r -= ((e->weight * e->pher) / prob);
 
-			if (r <= 0) {
+			if (r < EPSILON) {
 				next = e->id;
 				ncost = e->weight;
 				break;
@@ -96,24 +104,28 @@ void build_solution (struct graph *graph, struct ant *ant) {
 	}
 }
 
-void update_pher (struct graph *graph, struct ant *pop, uint32_t num_ants,
-															double decay) {
+void reset_pher (struct graph *graph) {
 	uint32_t i, j;
-	for (i = 0; i < num_ants; i++) {
-		struct ant *a = &pop[i];
-		for (j = 0; j < a->length; j++) {
-			struct edge *e = a->sol[j];
-			e->pher += (a->cost / a->length);
+	for (i = 0; i < graph->num_v; i++) {
+		struct vertex *v = &graph->vers[i];
+		for (j = 0; j < v->num_neigh; j++) {
+			v->neighs[j].pher = 1.0;
 		}
+	}
+}
+
+void update_pher (struct graph *graph, struct ant *pop, uint32_t num_ants,
+												double decay, uint32_t best) {
+	uint32_t i, j;
+	struct ant *a = &pop[best];
+	for (j = 0; j < a->length; j++) {
+		a->sol[j]->pher += (1 - (1 / a->length));
 	}
 	
 	for (i = 0; i < graph->num_v; i++) {
 		struct vertex *v = &graph->vers[i];
 		for (j = 0; j < v->num_neigh; j++) {
 			struct edge *e = &v->neighs[j];
-			if (e->pher == 1) {
-				continue;
-			} 
 			e->pher *= decay;
 		}
 	}
@@ -123,23 +135,41 @@ uint32_t aco_longest (struct graph *graph, double decay, uint32_t num_ants,
 															uint32_t num_it) {
 	struct ant *pop;
 	uint32_t best;
+	uint32_t best_it, avg, worst_it, best_ind;
 
 	best = 0;
 	pop = init_pop(graph, num_ants);
 
 	uint32_t i, j;
 	for (i = 0; i < num_it; i++) {
+		best_it = 0;
+		worst_it = ~0;
+		avg = 0;
 		for (j = 0; j < num_ants; j++) {
 			build_solution(graph, &pop[j]);
 
 			if (pop[j].cost > best) {
 				best = pop[j].cost;
 			}
+
+			if (pop[j].cost > best_it) {
+				best_it = pop[j].cost;
+				best_ind = j;
+			}
+
+			if (pop[j].cost < worst_it) {
+				worst_it = pop[j].cost;
+			}
+
+			avg += pop[j].cost;
 		}
-		update_pher(graph, pop, num_ants, decay);
+		avg /= num_ants;
+		fprintf(stderr, "%u, %u, %u\n", best_it, avg, worst_it);
+		update_pher(graph, pop, num_ants, decay, best_ind);
 	}
 
 	destroy_pop(pop, num_ants);
+	reset_pher(graph);
 
 	return best;
 }

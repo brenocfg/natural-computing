@@ -39,7 +39,7 @@ void add_edge (struct graph *graph, uint32_t v1, uint32_t v2, uint32_t w) {
 								graph->vers[v1].num_neigh*sizeof(struct edge));
 	graph->vers[v1].neighs[graph->vers[v1].num_neigh-1].id = v2;
 	graph->vers[v1].neighs[graph->vers[v1].num_neigh-1].weight = w;
-	graph->vers[v1].neighs[graph->vers[v1].num_neigh-1].pher = 1;
+	graph->vers[v1].neighs[graph->vers[v1].num_neigh-1].pher = 1.0;
 }	
 
 void print_graph (struct graph *graph) {
@@ -47,8 +47,8 @@ void print_graph (struct graph *graph) {
 	for (i = 0; i < graph->num_v; i++) {
 		fprintf(stderr, "%u[%u]: ", i, graph->vers[i].num_neigh);
 		for (j = 0; j < graph->vers[i].num_neigh; j++) {
-			fprintf(stderr, "(%u, %u)\t", graph->vers[i].neighs[j].id,
-											graph->vers[i].neighs[j].weight);
+			fprintf(stderr, "(%u, %.2f)\t", graph->vers[i].neighs[j].id,
+											graph->vers[i].neighs[j].pher);
 		}
 		fprintf(stderr, "\n");
 	}

@@ -10,7 +10,7 @@ vertex they point to, their weight, and the amount of pheromones they contain*/
 struct edge {
 	uint32_t id;
 	uint32_t weight;
-	uint32_t pher;
+	double pher;
 };
 
 /*Struct that represents a vertex in the graph. Vertices simply have an ID and
