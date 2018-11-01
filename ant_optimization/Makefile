@@ -1,8 +1,8 @@
 #Compile with some extra warnings
-CFLAGS=-c -g -O3 -Wall -Wextra
+CFLAGS=-c -O3 -Wall -Wextra
 
 #Library flags
-LIBFLAGS=-lm
+LIBFLAGS=-O3 -lm
 
 #Targets
 all: aco
