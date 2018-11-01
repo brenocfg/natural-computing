@@ -89,7 +89,7 @@ void build_solution (struct graph *graph, struct ant *ant) {
 
 			r -= ((e->weight * e->pher) / prob);
 
-			if (r < EPSILON) {
+			if (r <= EPSILON) {
 				next = e->id;
 				ncost = e->weight;
 				break;
@@ -119,7 +119,7 @@ void update_pher (struct graph *graph, struct ant *pop, double decay,
 	uint32_t i, j;
 	struct ant *a = &pop[best];
 	for (j = 0; j < a->length; j++) {
-		a->sol[j]->pher += (1 - (1 / a->length));
+		a->sol[j]->pher += (1 - (1 / a->cost));
 	}
 	
 	for (i = 0; i < graph->num_v; i++) {
