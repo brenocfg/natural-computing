@@ -159,7 +159,7 @@ uint32_t aco_longest (struct graph *graph, double decay, uint32_t num_ants,
 			avg += pop[j].cost;
 		}
 		avg /= num_ants;
-		fprintf(stderr, "%u, %u, %u\n", best_it, avg, worst_it);
+		fprintf(stdout, "%u, %u, %u, %u\n", best_it, avg, worst_it, best);
 		update_pher(graph, pop, decay, best_ind);
 	}
 
