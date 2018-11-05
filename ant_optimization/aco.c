@@ -15,11 +15,6 @@ struct ant {
 	struct edge **sol;
 };
 
-struct thread_data {
-	struct graph *graph;
-	struct ant *ant;	
-};
-
 struct ant *init_pop (struct graph *graph, uint32_t num_ants) {
 	struct ant *pop;
 
