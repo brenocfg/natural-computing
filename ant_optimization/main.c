@@ -43,14 +43,14 @@ struct graph *read_input (char *filename) {
 int main (int argc, char *argv[]) {
 	if (argc < 6) {
 		fprintf(stderr, "Usage: ./aco <input_file> <decay_ratio> <num_ants>");
-		fprintf(stderr, " <num_it> <num_seeds>\n");
+		fprintf(stderr, " <num_it> <seed>\n");
 		return 1;
 	}
 
 	double decay = 1.0 - atof(argv[2]);
 	uint32_t num_ants = atoi(argv[3]);
 	uint32_t num_it = atoi(argv[4]);
-	uint32_t num_seeds = atoi(argv[5]);
+	uint32_t seed = atoi(argv[5]);
 
 	struct graph *newgraph = read_input(argv[1]);
 	if (newgraph == NULL) {
@@ -58,14 +58,9 @@ int main (int argc, char *argv[]) {
 		return 1;
 	}
 
-	uint32_t i, acc = 0;
-	for (i = 0; i < num_seeds; i++) {
-		srand(i*i*i + i);
-		uint32_t ans = aco_longest(newgraph, decay, num_ants, num_it);
-		fprintf(stdout, "%u\n", ans);
-		acc += ans;
-	}
-	fprintf(stdout, "Average: %u\n", (acc/num_seeds));
+	srand(seed);
+	uint32_t ans = aco_longest(newgraph, decay, num_ants, num_it);
+	fprintf(stdout, "%u\n", ans);
 
 	destroy_graph(newgraph);
 
