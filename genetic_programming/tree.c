@@ -274,7 +274,6 @@ struct node *build_tree(uint8_t cur_height, uint8_t num_vars) {
 struct node *get_random_node(struct node *node, uint16_t cur_height) {
 	struct node *ret = NULL;
 
-
 	uint16_t self_prob;
 	self_prob = 100 * pow(0.75, (double)cur_height);
 
