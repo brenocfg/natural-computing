@@ -6,6 +6,7 @@
 #include <stdlib.h>
 
 #include "graph.h"
+#include "ind.h"
 
 struct graph *read_input (char *top_filename, char *req_filename) {
 	struct graph *graph;
@@ -76,7 +77,11 @@ int main (int argc, char *argv[]) {
 
 	//srand(seed);
 
+	struct ind *test = init_ind(newgraph);
+
 	print_graph(newgraph);
+
+	print_ind(test);
 
 	destroy_graph(newgraph);
 

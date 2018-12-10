@@ -7,11 +7,11 @@ LIBFLAGS=-O3 -lm
 #Targets
 all: rwa
 
-rwa: main.o graph.o
-	gcc graph.o main.o $(LIBFLAGS) -o rwa
+rwa: main.o graph.o ind.o
+	gcc graph.o main.o ind.o $(LIBFLAGS) -o rwa
 
-#aco.o: aco.c
-	#gcc $(CFLAGS) aco.c
+ind.o: src/ind.c src/ind.h src/graph.h
+	gcc $(CFLAGS) src/ind.c
 
 graph.o: src/graph.c src/graph.h
 	gcc $(CFLAGS) src/graph.c
